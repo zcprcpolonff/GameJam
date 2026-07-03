@@ -12,15 +12,32 @@ public class PlayerController : MonoBehaviour
     public LayerMask whatIsGround;    // 什么是地面（图层）
    
     private Rigidbody2D rb;
+    private DistanceJoint2D ropeJoint;
     private float horizontalInput;
 
     private bool isGrounded;          // 是否在地面上
     private bool jumpRequested;       // 是否按下了跳跃键
- 
+
+    [Header("References")]
+    public Transform anchorTransform; // 场景中的固定点
+    public RopeVisualConnector ropeVisual; // 绳子视觉脚本
+
+    [Header("Rope Limits")]
+    public float maxRopeLength = 5f; // 限制的最大移动距离
+    public float climbSpeed = 3f;    // W/S 控制绳子长短的速度
+    public float minRopeLength = 1.5f; 
     void Start()
     {
         // 获取人物身上的刚体组件
         rb = GetComponent<Rigidbody2D>();
+
+        // 初始化绳子脚本
+        if (ropeVisual != null && anchorTransform != null)
+        {
+            ropeVisual.anchorTransform = anchorTransform;
+            ropeVisual.playerTransform = this.transform;
+            ropeVisual.targetPhysicsDistance = maxRopeLength;
+        }
     }
 
     void Update()
@@ -36,6 +53,33 @@ public class PlayerController : MonoBehaviour
         {
             jumpRequested = true;
         }
+
+        if (anchorTransform != null)
+        {
+            float deltaY = Mathf.Abs(rb.position.y - anchorTransform.position.y);
+            
+            // 如果高度差已经大于绳长，说明根本够不着地（特殊情况，直接按原逻辑卡死）
+            if (deltaY >= maxRopeLength) return;
+
+            // 【数学魔法】利用勾股定理计算出当前高度下，最大允许的 X 轴偏移量
+            // maxDeltaX = sqrt(RopeLength^2 - deltaY^2)
+            float maxDeltaX = Mathf.Sqrt((maxRopeLength * maxRopeLength) - (deltaY * deltaY));
+
+            float currentDeltaX = rb.position.x - anchorTransform.position.x;
+
+            // 3. 只强行截断 X 轴，完全把 Y 轴留给重力和地面碰撞！
+            if (Mathf.Abs(currentDeltaX) > maxDeltaX)
+            {
+                float clampedX = anchorTransform.position.x + (Mathf.Sign(currentDeltaX) * maxDeltaX);
+                rb.position = new Vector2(clampedX, rb.position.y);
+                
+                // 把往外走的 X 速度清零
+                if ((currentDeltaX > 0 && rb.velocity.x > 0) || (currentDeltaX < 0 && rb.velocity.x < 0))
+                {
+                    rb.velocity = new Vector2(0, rb.velocity.y);
+                }
+            }
+        }
     }
 
     void FixedUpdate()
@@ -48,16 +92,6 @@ public class PlayerController : MonoBehaviour
         {
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             jumpRequested = false;
-        }
-    }
-
-    // 在 Scene 视图里画一个红色的圈圈，方便我们调试看清脚底的检测范围
-    private void OnDrawGizmosSelected()
-    {
-        if (groundCheck != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(groundCheck.position, checkRadius);
         }
     }
 }
