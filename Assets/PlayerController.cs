@@ -28,31 +28,64 @@ public class PlayerController : MonoBehaviour
     public float climbSpeed = 3f;
     public float minRopeLength = 1.5f;
 
-    void Start()
+    public static PlayerController Instance { get; private set; }
+
+    [HideInInspector]
+    public bool canMove = true;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
 
+        if (rb == null)
+        {
+            Debug.LogError("PlayerController 需要 Rigidbody2D 组件。 ");
+        }
+
         if (ropeVisual != null && anchorTransform != null)
         {
             ropeVisual.anchorTransform = anchorTransform;
-            ropeVisual.playerTransform = this.transform;
+            ropeVisual.playerTransform = transform;
             ropeVisual.targetPhysicsDistance = maxRopeLength;
         }
     }
 
-    void Update()
+    private void Update()
     {
+        if (!canMove)
+        {
+            horizontalInput = 0f;
+            if (anim != null)
+            {
+                anim.SetFloat("Speed", 0f);
+            }
+            return;
+        }
+
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
-        // 移动时 flipX 翻转（默认朝右，左移 flipX）
-        if (horizontalInput > 0)
-            spriteRenderer.flipX = false;
-        else if (horizontalInput < 0)
-            spriteRenderer.flipX = true;
+        if (spriteRenderer != null)
+        {
+            if (horizontalInput > 0)
+                spriteRenderer.flipX = false;
+            else if (horizontalInput < 0)
+                spriteRenderer.flipX = true;
+        }
 
-        // 驱动动画：有输入→walk，静止→idle
         if (anim != null)
             anim.SetFloat("Speed", Mathf.Abs(horizontalInput));
 
@@ -62,13 +95,23 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
+        if (rb == null)
+            return;
+
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
+
+        if (!canMove)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            jumpRequested = false;
+            return;
+        }
 
         float targetVx = horizontalInput * moveSpeed;
 
-        // 绳索 X 轴约束
         if (anchorTransform != null)
         {
             float deltaY = Mathf.Abs(rb.position.y - anchorTransform.position.y);
@@ -101,5 +144,32 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             jumpRequested = false;
         }
+    }
+
+    public void FreezePlayer()
+    {
+        canMove = false;
+        horizontalInput = 0f;
+        jumpRequested = false;
+
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+
+        if (anim != null)
+        {
+            anim.SetFloat("Speed", 0f);
+        }
+
+        Debug.Log("<color=yellow>[Player]</color> 玩家操作已屏蔽。");
+    }
+
+    public void UnfreezePlayer()
+    {
+        canMove = true;
+        horizontalInput = 0f;
+        Debug.Log("<color=green>[Player]</color> 玩家操作已恢复。");
     }
 }

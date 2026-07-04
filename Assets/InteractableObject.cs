@@ -1,64 +1,127 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractableObject : MonoBehaviour
+public class Interactable : MonoBehaviour
 {
-    private bool isPlayerInZone = false;
-    private SpriteRenderer spriteRenderer;
-    private Color originalColor;
+    [Header("互动设置")]
+    public KeyCode interactKey = KeyCode.E;
+
+    [Header("对话剧本")]
+    public List<DialogueLine> npcDialogue = new List<DialogueLine>();
+
+    //拖入头顶气泡的 Canvas 物体
+    [Header("提示 UI")]
+    public GameObject HintCanvas;
+
+    private bool isPlayerInRange = false;
+    private bool hasInteracted = false;
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-        {
-            originalColor = spriteRenderer.color;
-        }
+        // 游戏一开始，确保提示气泡是隐藏的
+        if (HintCanvas != null) HintCanvas.SetActive(false);
     }
 
     void Update()
     {
-        // 当玩家在区域内，且按下 E 键时触发交互
-        if (isPlayerInZone && Input.GetKeyDown(KeyCode.E))
+        if (isPlayerInRange && !hasInteracted && Input.GetKeyDown(interactKey))
         {
             TriggerInteraction();
         }
     }
 
-    private void TriggerInteraction()
+    void TriggerInteraction()
     {
-        // 1. 控制台弹出提示（满足你的核心需求）
-        Debug.Log("【控制台提示】: 交互成功！你成功触发了该交互点。");
-        
-        // 2. 顺便给一个Jam常用的视觉反馈：变绿！
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.color = Color.green;
-        }
-    }
+        if (hasInteracted) return;
 
-    // 玩家走入光圈
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            isPlayerInZone = true;
-            Debug.Log("【系统】: 接近交互点，请按下 [E] 键进行交互");
-        }
-    }
+        hasInteracted = true;
+        Debug.Log($"<color=cyan>[Interaction]</color> 互动成功！检测到玩家按下了 {interactKey}");
 
-    // 玩家离开光圈
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
+        PlayerController player = GetPlayerController();
+        if (player != null)
         {
-            isPlayerInZone = false;
-            Debug.Log("【系统】: 离开了交互范围");
-            
-            // 离开后恢复原来的颜色
-            if (spriteRenderer != null)
+            player.FreezePlayer();
+        }
+        else
+        {
+            Debug.LogWarning("未找到 PlayerController，无法冻结玩家。 ");
+        }
+
+        DialogueController dialogueController = GetDialogueController();
+        if (dialogueController != null)
+        {
+            dialogueController.StartDialogue(npcDialogue);
+        }
+        else
+        {
+            Debug.LogWarning("未找到 DialogueController，无法打开对话框。 ");
+            if (player != null)
             {
-                spriteRenderer.color = originalColor;
+                player.UnfreezePlayer();
             }
         }
+
+        if (HintCanvas != null) HintCanvas.SetActive(false);
+
+        PlayerController.Instance.FreezePlayer();
+        DialogueController.Instance.StartDialogue(npcDialogue);
+    }
+
+    private PlayerController GetPlayerController()
+    {
+        if (PlayerController.Instance != null)
+            return PlayerController.Instance;
+
+        return FindObjectOfType<PlayerController>();
+    }
+
+    private DialogueController GetDialogueController()
+    {
+        if (DialogueController.Instance != null)
+            return DialogueController.Instance;
+
+        return FindObjectOfType<DialogueController>();
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (IsPlayerCollider(other))
+        {
+            isPlayerInRange = true;
+
+            if (HintCanvas != null) 
+            {
+                HintCanvas.SetActive(true);
+            }
+
+            Debug.Log($"玩家进入互动范围，请按 {interactKey} 键互动。");
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (IsPlayerCollider(other))
+        {
+            isPlayerInRange = false;
+            hasInteracted = false;
+
+            if (HintCanvas != null) 
+            {
+                HintCanvas.SetActive(false);
+            }
+
+            Debug.Log("玩家离开了互动范围。");
+        }
+    }
+
+    private bool IsPlayerCollider(Collider2D other)
+    {
+        if (other == null) return false;
+
+        if (other.CompareTag("Player")) return true;
+        if (other.attachedRigidbody != null && other.attachedRigidbody.CompareTag("Player")) return true;
+        if (other.transform.root != null && other.transform.root.CompareTag("Player")) return true;
+
+        return false;
     }
 }
