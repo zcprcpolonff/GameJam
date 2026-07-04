@@ -9,8 +9,18 @@ public class Interactable : MonoBehaviour
     [Header("对话剧本")]
     public List<DialogueLine> npcDialogue = new List<DialogueLine>();
 
+    //拖入头顶气泡的 Canvas 物体
+    [Header("提示 UI")]
+    public GameObject HintCanvas;
+
     private bool isPlayerInRange = false;
     private bool hasInteracted = false;
+
+    void Start()
+    {
+        // 游戏一开始，确保提示气泡是隐藏的
+        if (HintCanvas != null) HintCanvas.SetActive(false);
+    }
 
     void Update()
     {
@@ -50,6 +60,11 @@ public class Interactable : MonoBehaviour
                 player.UnfreezePlayer();
             }
         }
+
+        if (HintCanvas != null) HintCanvas.SetActive(false);
+
+        PlayerController.Instance.FreezePlayer();
+        DialogueController.Instance.StartDialogue(npcDialogue);
     }
 
     private PlayerController GetPlayerController()
@@ -73,6 +88,12 @@ public class Interactable : MonoBehaviour
         if (IsPlayerCollider(other))
         {
             isPlayerInRange = true;
+
+            if (HintCanvas != null) 
+            {
+                HintCanvas.SetActive(true);
+            }
+
             Debug.Log($"玩家进入互动范围，请按 {interactKey} 键互动。");
         }
     }
@@ -83,6 +104,12 @@ public class Interactable : MonoBehaviour
         {
             isPlayerInRange = false;
             hasInteracted = false;
+
+            if (HintCanvas != null) 
+            {
+                HintCanvas.SetActive(false);
+            }
+
             Debug.Log("玩家离开了互动范围。");
         }
     }
