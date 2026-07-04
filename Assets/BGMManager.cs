@@ -5,6 +5,7 @@ public class BGMManager : MonoBehaviour
 {
     public AudioClip defaultBGM;
     public AudioClip receptionBGM;
+    public AudioClip homeBGM;
 
     private AudioSource audioSource;
 
@@ -18,6 +19,8 @@ public class BGMManager : MonoBehaviour
         string sceneName = SceneManager.GetActiveScene().name;
         if (sceneName == "Reception")
             audioSource.clip = receptionBGM;
+        else if (sceneName == "Home")
+            audioSource.clip = homeBGM;
         else
             audioSource.clip = defaultBGM;
 

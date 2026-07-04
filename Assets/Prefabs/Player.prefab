@@ -242,3 +242,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultBGM: {fileID: 8300000, guid: c515cd00a99185840be2ad3d3bfa8836, type: 3}
   receptionBGM: {fileID: 8300000, guid: 0015a4476e043df4bac7c53a1388e3c3, type: 3}
+  homeBGM: {fileID: 8300000, guid: 55e5132d7729a8f4c934aa9b24157191, type: 3}
