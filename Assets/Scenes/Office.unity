@@ -637,7 +637,7 @@ PrefabInstance:
       objectReference: {fileID: 351052376}
     - target: {fileID: 7182249167060218638, guid: 39eef62765282d1408b1fb63c45b16a9, type: 3}
       propertyPath: maxRopeLength
-      value: 10
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7182249167060218638, guid: 39eef62765282d1408b1fb63c45b16a9, type: 3}
       propertyPath: anchorRigidbody
@@ -1366,11 +1366,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8730589395007996037, guid: 3c9161345d3ef544184e4b5c8a670199, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7
+      value: -1.4
       objectReference: {fileID: 0}
     - target: {fileID: 8730589395007996037, guid: 3c9161345d3ef544184e4b5c8a670199, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -2.56
       objectReference: {fileID: 0}
     - target: {fileID: 8730589395007996037, guid: 3c9161345d3ef544184e4b5c8a670199, type: 3}
       propertyPath: m_LocalPosition.z
