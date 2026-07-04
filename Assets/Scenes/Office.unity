@@ -330,6 +330,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ee3f1b5096147143be75c38b5e26615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactKey: 101
+  npcDialogue: []
+  HintCanvas: {fileID: 0}
 --- !u!58 &505205335
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -801,6 +804,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ee3f1b5096147143be75c38b5e26615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactKey: 101
+  npcDialogue:
+  - name: "\u6211"
+    text: 1
+    characterSprite: {fileID: 21300000, guid: 5d3b50532f862394fae3b83a6f970625, type: 3}
+  HintCanvas: {fileID: 0}
 --- !u!58 &750568417
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1238,6 +1247,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ee3f1b5096147143be75c38b5e26615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactKey: 101
+  npcDialogue: []
+  HintCanvas: {fileID: 0}
 --- !u!58 &2112571586
 CircleCollider2D:
   m_ObjectHideFlags: 0
