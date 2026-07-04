@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 9223372036854775807}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,8 +31,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.51, y: -0.48, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8811507759852552091}
   m_Father: {fileID: 0}
@@ -148,8 +148,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 2}
+  m_Offset: {x: -0.65187454, y: 0.7285657}
+  m_Size: {x: 4.144333, y: 15.187852}
   m_Direction: 0
 --- !u!114 &7182249167060218638
 MonoBehaviour:
@@ -172,9 +172,10 @@ MonoBehaviour:
     m_Bits: 64
   anchorTransform: {fileID: 0}
   ropeVisual: {fileID: 0}
-  maxRopeLength: 5
+  maxRopeLength: 10
   climbSpeed: 3
   minRopeLength: 1.5
+  canMove: 1
 --- !u!95 &9223372036854775807
 Animator:
   serializedVersion: 5
