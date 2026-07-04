@@ -28,6 +28,18 @@ public class PlayerController : MonoBehaviour
     public float climbSpeed = 3f;
     public float minRopeLength = 1.5f;
 
+    //方便互动点直接获取玩家状态
+    public static PlayerController Instance { get; private set; }
+
+    [HideInInspector]
+    public bool canMove = true; // 控制玩家是否能操作的开关
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -44,6 +56,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // 如果操作被屏蔽，直接跳过移动逻辑
+        if (!canMove) return;
+
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
         // 移动时 flipX 翻转（默认朝右，左移 flipX）
@@ -101,5 +116,19 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             jumpRequested = false;
         }
+    }
+
+    // 提供给外部调用的方法：冻结玩家
+    public void FreezePlayer()
+    {
+        canMove = false;
+        Debug.Log("<color=yellow>[Player]</color> 玩家操作已屏蔽。");
+    }
+
+    // 提供给外部调用的方法：恢复玩家
+    public void UnfreezePlayer()
+    {
+        canMove = true;
+        Debug.Log("<color=green>[Player]</color> 玩家操作已恢复。");
     }
 }
