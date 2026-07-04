@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ea0da8603999a6e4d8560ba94985ec1a, type: 3}
+  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -169,11 +169,6 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  anchorTransform: {fileID: 0}
-  ropeVisual: {fileID: 0}
-  maxRopeLength: 5
-  climbSpeed: 3
-  minRopeLength: 1.5
 --- !u!1 &7902830156294145459
 GameObject:
   m_ObjectHideFlags: 0
