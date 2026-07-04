@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Interactable : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class Interactable : MonoBehaviour
     //拖入头顶气泡的 Canvas 物体
     [Header("提示 UI")]
     public GameObject HintCanvas;
+
+    [Header("对话结束后的触发事件")]
+    public UnityEvent onDialogueEndEvent;
 
     private bool isPlayerInRange = false;
     private bool hasInteracted = false;
@@ -50,7 +54,7 @@ public class Interactable : MonoBehaviour
         DialogueController dialogueController = GetDialogueController();
         if (dialogueController != null)
         {
-            dialogueController.StartDialogue(npcDialogue);
+            dialogueController.StartDialogue(npcDialogue, this);
         }
         else
         {
@@ -62,6 +66,16 @@ public class Interactable : MonoBehaviour
         }
 
         if (HintCanvas != null) HintCanvas.SetActive(false);
+    }
+
+    // 提供给 DialogueManager 调用的公共方法
+    public void CompleteInteraction()
+    {
+        // 触发我们在 Inspector 里配置的所有事件！
+        if (onDialogueEndEvent != null)
+        {
+            onDialogueEndEvent.Invoke();
+        }
     }
 
     private PlayerController GetPlayerController()

@@ -172,4 +172,10 @@ public class PlayerController : MonoBehaviour
         horizontalInput = 0f;
         Debug.Log("<color=green>[Player]</color> 玩家操作已恢复。");
     }
+
+    public void ChangeStoryProgress(int amount)
+{
+    maxRopeLength = amount;
+    Debug.Log($"<color=orange>[Player Data]</color> 玩家身上的值已改变！当前值: {maxRopeLength}");
+}
 }
