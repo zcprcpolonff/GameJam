@@ -38,6 +38,11 @@ public class DialogueController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        if (dialogueRoot == null && dialoguePanel != null)
+        {
+            dialogueRoot = dialoguePanel;
+        }
     }
 
     private void Start()
@@ -45,10 +50,6 @@ public class DialogueController : MonoBehaviour
         if (dialogueRoot != null)
         {
             dialogueRoot.SetActive(false);
-        }
-        else if (dialoguePanel != null)
-        {
-            dialoguePanel.SetActive(false);
         }
     }
 
@@ -72,13 +73,18 @@ public class DialogueController : MonoBehaviour
         currentIndex = 0;
         isDialogueActive = true;
 
+        if (dialogueRoot == null && dialoguePanel != null)
+        {
+            dialogueRoot = dialoguePanel;
+        }
+
         if (dialogueRoot != null)
         {
             dialogueRoot.SetActive(true);
         }
-        else if (dialoguePanel != null)
+        else
         {
-            dialoguePanel.SetActive(true);
+            Debug.LogWarning("DialogueController 没有绑定 dialogueRoot 或 dialoguePanel。无法显示对话 UI。");
         }
 
         DisplayNextLine();
@@ -117,23 +123,25 @@ public class DialogueController : MonoBehaviour
     {
         isDialogueActive = false;
 
+        if (dialogueRoot == null && dialoguePanel != null)
+        {
+            dialogueRoot = dialoguePanel;
+        }
+
         if (dialogueRoot != null)
         {
             dialogueRoot.SetActive(false);
         }
-        else if (dialoguePanel != null)
+
+        PlayerController player = PlayerController.Instance;
+        if (player == null)
         {
-            dialoguePanel.SetActive(false);
+            player = FindObjectOfType<PlayerController>();
         }
 
-        PlayerController player = FindObjectOfType<PlayerController>();
         if (player != null)
         {
             player.UnfreezePlayer();
-        }
-        else if (PlayerController.Instance != null)
-        {
-            PlayerController.Instance.UnfreezePlayer();
         }
 
         Debug.Log("对话全部结束，解冻玩家。");
