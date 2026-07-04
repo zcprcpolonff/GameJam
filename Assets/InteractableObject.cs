@@ -62,9 +62,6 @@ public class Interactable : MonoBehaviour
         }
 
         if (HintCanvas != null) HintCanvas.SetActive(false);
-
-        PlayerController.Instance.FreezePlayer();
-        DialogueController.Instance.StartDialogue(npcDialogue);
     }
 
     private PlayerController GetPlayerController()
