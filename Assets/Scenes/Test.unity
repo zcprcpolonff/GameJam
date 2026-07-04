@@ -215,6 +215,7 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 39eef62765282d1408b1fb63c45b16a9, type: 3}
+<<<<<<< HEAD
 --- !u!1 &1705967892
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,6 +360,8 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.0001, y: 0.0001}
   m_EdgeRadius: 0
+=======
+>>>>>>> origin/main
 --- !u!1001 &1807285190
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -740,4 +743,7 @@ SceneRoots:
   - {fileID: 1924861147}
   - {fileID: 9152769169811384688}
   - {fileID: 8936658772607669959}
+<<<<<<< HEAD
   - {fileID: 1705967895}
+=======
+>>>>>>> origin/main
