@@ -10,5 +10,26 @@ EditorBuildSettings:
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
     path: Assets/Scenes/Office.unity
-    guid: 3c56b2449d69f7a4b85738cd132f3b01
+    guid: 5023a63f93a8c944681df69d11095db9
+  - enabled: 1
+    path: Assets/Scenes/Reception 1.unity
+    guid: d42fd0ef45b8c2c4c815f41f2d3b338e
+  - enabled: 1
+    path: Assets/Scenes/Reception.unity
+    guid: 80eb80193b2a4c54988b088d9d31e934
+  - enabled: 1
+    path: Assets/Scenes/Meeting room.unity
+    guid: e7579b4757b3d7b41832e01b298f595d
+  - enabled: 1
+    path: Assets/Scenes/Tearoom.unity
+    guid: 284091233ce285741a9a9b27b6806969
+  - enabled: 1
+    path: Assets/Scenes/Test.unity
+    guid: 1fc402f66ecfff348b7e8bdcd665b13e
+  - enabled: 1
+    path: Assets/Scenes/Test2.unity
+    guid: e63ac6d35c1b20843af3c61bf3d465ea
+  - enabled: 1
+    path: Assets/Scenes/Desktop.unity
+    guid: 1b67307d7749a354ab0ac011f66e65cc
   m_configObjects: {}

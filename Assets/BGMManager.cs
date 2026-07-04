@@ -17,7 +17,7 @@ public class BGMManager : MonoBehaviour
 
         // 根据场景选择BGM
         string sceneName = SceneManager.GetActiveScene().name;
-        if (sceneName == "Reception")
+        if (sceneName == "Reception" || sceneName == "Reception 1")
             audioSource.clip = receptionBGM;
         else if (sceneName == "Home")
             audioSource.clip = homeBGM;

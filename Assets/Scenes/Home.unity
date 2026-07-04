@@ -726,7 +726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: Office
+  sceneToLoad: Reception 1
   hoverScale: 1.2
 --- !u!61 &7000000000000000003
 BoxCollider2D:

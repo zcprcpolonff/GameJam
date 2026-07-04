@@ -22,7 +22,10 @@ public class SceneTransferTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 1. 核心触发：检查碰撞体是否为玩家，且当前没有在传送中
+        // 刚恢复过位置 → 不算"走进来"，必须走出去再进来
+        if (GameManager.PlayerJustRestored) return;
+
+        // 核心触发：检查碰撞体是否为玩家，且当前没有在传送中
         if (collision.CompareTag("Player") && !isTransferring)
         {
             // 检查单例是否存在，防止空引用报错
@@ -46,10 +49,7 @@ public class SceneTransferTrigger : MonoBehaviour
         
         Debug.Log($"玩家已触发传送，正在加载目标场景: {targetSceneName}");
 
-        // 3. 场景加载：使用异步加载（更利于后续扩展淡入淡出转场动画）
-        // 如果想用同步，可以直接使用 SceneManager.LoadScene(targetSceneName);
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(targetSceneName);
-        
-        // 可以在这里扩展：触发 UI 遮罩的 Fade In 效果
+        // 3. 通过 GameManager 跳转（自动保存当前位置）
+        GameManager.LoadScene(SceneManager.GetActiveScene().name, targetSceneName);
     }
 }
