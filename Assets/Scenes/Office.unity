@@ -648,6 +648,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8716983400033262265, guid: 39eef62765282d1408b1fb63c45b16a9, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8938652396754507156, guid: 39eef62765282d1408b1fb63c45b16a9, type: 3}
       propertyPath: m_Size.x
       value: 8.105076
