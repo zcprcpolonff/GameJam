@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     {
         public string[] flagNames;
         public float amount;
+        public string sceneName; // 绳子归属哪个场景
         public bool consumed;
     }
     private static System.Collections.Generic.List<ContingentRope> contingentRopes
@@ -106,16 +107,18 @@ public class GameManager : MonoBehaviour
     {
         if (string.IsNullOrEmpty(flagNamesCsv) || amount == 0f) return;
 
+        string scene = SceneManager.GetActiveScene().name;
+
         var cr = new ContingentRope
         {
             flagNames = flagNamesCsv.Split(','),
             amount = amount,
+            sceneName = scene,
             consumed = false
         };
         contingentRopes.Add(cr);
-        Debug.Log($"[GameManager] 注册延迟绳子: flags=[{flagNamesCsv}] amount={amount}");
+        Debug.Log($"[GameManager] 注册延迟绳子: scene=[{scene}] flags=[{flagNamesCsv}] amount={amount}");
 
-        // 立即检查一次（可能在当前帧就满足了）
         CheckContingentRopes();
     }
 
@@ -134,8 +137,22 @@ public class GameManager : MonoBehaviour
             if (allTrue)
             {
                 cr.consumed = true;
-                ExtendRope(cr.amount);
-                Debug.Log($"[GameManager] 条件满足，绳子 +{cr.amount}");
+
+                // 直接更新目标场景的绳子字典（不依赖当前活跃场景）
+                float newRope = sceneRopeLengths.ContainsKey(cr.sceneName)
+                    ? sceneRopeLengths[cr.sceneName] + cr.amount
+                    : cr.amount;
+                sceneRopeLengths[cr.sceneName] = newRope;
+
+                // 如果恰好在目标场景中，同步到 PlayerController
+                if (SceneManager.GetActiveScene().name == cr.sceneName && PlayerController.Instance != null)
+                {
+                    PlayerController.Instance.ExtendRope(cr.amount);
+                    if (PlayerController.Instance.ropeVisual != null)
+                        PlayerController.Instance.ropeVisual.targetPhysicsDistance = newRope;
+                }
+
+                Debug.Log($"[GameManager] 条件满足，[{cr.sceneName}] 绳子 +{cr.amount} → {newRope}");
             }
         }
     }
