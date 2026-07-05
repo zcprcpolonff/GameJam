@@ -137,12 +137,6 @@ public class DialogueController : MonoBehaviour
             dialogueRoot.SetActive(false);
         }
 
-        if (currentTriggerSource != null)
-        {
-            currentTriggerSource.onDialogueEndEvent?.Invoke();
-            currentTriggerSource = null;
-        }
-
         PlayerController player = PlayerController.Instance;
         if (player == null)
         {
