@@ -29,8 +29,6 @@ public class DialogueController : MonoBehaviour
     private bool isDialogueActive = false;
     public bool IsDialogueActive => isDialogueActive;
 
-    private Interactable currentTriggerSource;
-
     private void Awake()
     {
         if (Instance == null)
@@ -64,7 +62,7 @@ public class DialogueController : MonoBehaviour
         }
     }
 
-    public void StartDialogue(List<DialogueLine> lines, Interactable source = null)
+    public void StartDialogue(List<DialogueLine> lines)
     {
         if (lines == null || lines.Count == 0)
         {
@@ -72,7 +70,6 @@ public class DialogueController : MonoBehaviour
             return;
         }
 
-        currentTriggerSource = source;
         currentLines = new List<DialogueLine>(lines);
         currentIndex = 0;
         isDialogueActive = true;
@@ -135,12 +132,6 @@ public class DialogueController : MonoBehaviour
         if (dialogueRoot != null)
         {
             dialogueRoot.SetActive(false);
-        }
-
-        if (currentTriggerSource != null)
-        {
-            currentTriggerSource.onDialogueEndEvent?.Invoke();
-            currentTriggerSource = null;
         }
 
         PlayerController player = PlayerController.Instance;
