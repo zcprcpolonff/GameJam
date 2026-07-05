@@ -26,6 +26,16 @@ public class Interactable : MonoBehaviour
     public float extendRopePhase3 = 0f;
     public string setFlagPhase3 = "";
 
+    [Header("──────────────── Phase 4 ────────────────")]
+    public List<DialogueLine> phase4Dialogue = new List<DialogueLine>();
+    public string unlockFlagPhase4 = "";
+    public float extendRopePhase4 = 0f;
+    public string setFlagPhase4 = "";
+
+    [Header("延迟条件绳子（逗号分隔的 flag 列表，全部满足后增长）")]
+    public string contingentRopeFlags = "";
+    public float contingentRopeAmount = 0f;
+
     [Header("条件限制")]
     public bool requireDesktopVisit = false;
 
@@ -55,6 +65,14 @@ public class Interactable : MonoBehaviour
 
     void TriggerInteraction()
     {
+        // ── Phase 4 ──
+        if (phasesPlayed < 4 && CanTriggerPhase(phase4Dialogue, unlockFlagPhase4, 3))
+        {
+            phasesPlayed = 4;
+            Debug.Log($"<color=cyan>[Interaction]</color> Phase4 对话触发");
+            PlayDialogue(phase4Dialogue, extendRopePhase4, setFlagPhase4);
+            return;
+        }
         // ── Phase 3 ──
         if (phasesPlayed < 3 && CanTriggerPhase(phase3Dialogue, unlockFlagPhase3, 2))
         {
@@ -73,6 +91,7 @@ public class Interactable : MonoBehaviour
         }
         // ── Phase 1 ──
         if (hasInteracted) return;
+        if (phasesPlayed > 0) return; // 避免退出重进再触发 Phase1
         if (requireDesktopVisit && !GameManager.HasVisitedDesktop) return;
         if (!string.IsNullOrEmpty(unlockFlagPhase1) && !GameManager.GetFlag(unlockFlagPhase1)) return;
 
@@ -125,6 +144,9 @@ public class Interactable : MonoBehaviour
 
         if (!string.IsNullOrEmpty(setFlag))
             StartCoroutine(SetFlagAfterDialogue(setFlag));
+
+        if (!string.IsNullOrEmpty(contingentRopeFlags) && contingentRopeAmount != 0f)
+            GameManager.RegisterContingentRope(contingentRopeFlags, contingentRopeAmount);
 
         if (HintCanvas != null) HintCanvas.SetActive(false);
     }
@@ -192,6 +214,7 @@ public class Interactable : MonoBehaviour
         if (npcDialogue != null && npcDialogue.Count > 0) c++;
         if (phase2Dialogue != null && phase2Dialogue.Count > 0) c++;
         if (phase3Dialogue != null && phase3Dialogue.Count > 0) c++;
+        if (phase4Dialogue != null && phase4Dialogue.Count > 0) c++;
         if (!string.IsNullOrEmpty(jumpToScene)) c++;
         return Mathf.Max(c, 1);
     }

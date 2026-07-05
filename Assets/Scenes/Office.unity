@@ -396,14 +396,47 @@ MonoBehaviour:
   extendRopeAmount: 2
   markAsGotReport: 0
   setFlagPhase1: 
-  phase2Dialogue: []
-  unlockFlagPhase2: 
+  phase2Dialogue:
+  - name: ' '
+    text: "\u5C0F\u7EA2\uFF0C\u7B56\u5212\u6848\u7ED9\u6211\u4E00\u4E0B\u8001\u677F\u7740\u6025\u8981"
+    characterSprite: {fileID: 21300000, guid: 666601e78604c7b4b83ee7cf75ff13cd, type: 3}
+  - name: ' '
+    text: "\u554A\uFF1F\uFF01"
+    characterSprite: {fileID: 21300000, guid: 355c8d3ec245860468f7dc894d75ce07, type: 3}
+  - name: ' '
+    text: "\u4F60\u597D\u5413\u4EBA\u554A\uFF01\u4F60\u4E0D\u662F\u8D70\u4E86\u5417\uFF0C\u600E\u4E48\u53C8\u56DE\u6765\u4E86\uFF1F"
+    characterSprite: {fileID: 21300000, guid: 355c8d3ec245860468f7dc894d75ce07, type: 3}
+  - name: ' '
+    text: "\u8001\u677F\u8981\u5F00\u4F1A\uFF0C\u53EB\u6211\u6765\u62FF\u7B56\u5212\u6848"
+    characterSprite: {fileID: 21300000, guid: 666601e78604c7b4b83ee7cf75ff13cd, type: 3}
+  - name: ' '
+    text: "\uFF08\u55E4\u7B11\uFF09\u611F\u89C9\u4F60\u73ED\u5473\u597D\u91CD\u554A"
+    characterSprite: {fileID: 21300000, guid: 355c8d3ec245860468f7dc894d75ce07, type: 3}
+  - name: ' '
+    text: "\u60A8\u5C31\u53EF\u522B\u7B11\u8BDD\u6211\u4E86"
+    characterSprite: {fileID: 21300000, guid: 666601e78604c7b4b83ee7cf75ff13cd, type: 3}
+  - name: ' '
+    text: "\uFF08\u4F60\u7684\u6D3B\u90FD\u6211\u5E72\u4E86\u80FD\u4E0D\u73ED\u5473\u91CD\u5417\uFF1F\u2026\u2026\uFF09\uFF08\u7B97\u4E86\uFF0C\u8DDF\u4F60\u8FD9\u79CD\u5929\u5929\u5728\u5DE5\u4F4D\u4F4E\u8D28\u5C0F\u6E38\u620F\u7684\u4EBA\u771F\u8BF4\u4E0D\u6E05\u695A\uFF09"
+    characterSprite: {fileID: 21300000, guid: 666601e78604c7b4b83ee7cf75ff13cd, type: 3}
+  - name: ' '
+    text: "\uFF08\u62FF\u5230\u4E86\u5C31\u8D76\u7D27\u8D70\u5427\uFF0C\u611F\u89C9\u7EF3\u5B50\u53C8\u4F38\u957F\u4E86\uFF09"
+    characterSprite: {fileID: 21300000, guid: 666601e78604c7b4b83ee7cf75ff13cd, type: 3}
+  - name: ' '
+    text: "\uFF08\u5B8C\u6210\u8001\u677F\u7684\u4EFB\u52A1\u4E4B\u540E\u5C31\u53EF\u4EE5\u56DE\u5BB6\u4E86\u5427\uFF1F\uFF09"
+    characterSprite: {fileID: 21300000, guid: 666601e78604c7b4b83ee7cf75ff13cd, type: 3}
+  unlockFlagPhase2: MeetingRoom3Done
   extendRopePhase2: 0
-  setFlagPhase2: 
+  setFlagPhase2: Office3Phase2Done
   phase3Dialogue: []
   unlockFlagPhase3: 
   extendRopePhase3: 0
   setFlagPhase3: 
+  phase4Dialogue: []
+  unlockFlagPhase4: 
+  extendRopePhase4: 0
+  setFlagPhase4: 
+  contingentRopeFlags: 
+  contingentRopeAmount: 0
   requireDesktopVisit: 0
   jumpToScene: 
   jumpOnce: 1
@@ -1678,11 +1711,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8311341113140178183, guid: 89e92dd0aaa619544b066a688e5307a9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.87682533
+      value: -3.72
       objectReference: {fileID: 0}
     - target: {fileID: 8311341113140178183, guid: 89e92dd0aaa619544b066a688e5307a9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.79
+      value: 2.43
       objectReference: {fileID: 0}
     - target: {fileID: 8311341113140178183, guid: 89e92dd0aaa619544b066a688e5307a9, type: 3}
       propertyPath: m_LocalPosition.z

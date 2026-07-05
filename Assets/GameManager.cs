@@ -25,13 +25,23 @@ public class GameManager : MonoBehaviour
     // 通用 Flag
     private static System.Collections.Generic.Dictionary<string, bool> flags
         = new System.Collections.Generic.Dictionary<string, bool>();
-    public static void SetFlag(string key) { flags[key] = true; Debug.Log($"[GameManager] Flag ↑ {key}"); }
+    public static void SetFlag(string key) { flags[key] = true; Debug.Log($"[GameManager] Flag ↑ {key}"); CheckContingentRopes(); }
     public static bool GetFlag(string key) { return !string.IsNullOrEmpty(key) && flags.ContainsKey(key) && flags[key]; }
 
     public static float TeleportCooldownUntil { get; private set; }
 
     /// <summary> 刚恢复了玩家位置（落地在传送点不算"走进来"）</summary>
     public static bool PlayerJustRestored { get; set; }
+
+    // ─── 延迟条件绳子（等所有关联 flag 都就绪后才增长）───
+    private class ContingentRope
+    {
+        public string[] flagNames;
+        public float amount;
+        public bool consumed;
+    }
+    private static System.Collections.Generic.List<ContingentRope> contingentRopes
+        = new System.Collections.Generic.List<ContingentRope>();
 
     private void Awake()
     {
@@ -61,7 +71,10 @@ public class GameManager : MonoBehaviour
     {
         string sceneName = scene.name;
         if (!string.IsNullOrEmpty(sceneName))
+        {
             StartCoroutine(RestoreAfterFrame(sceneName));
+            CheckContingentRopes();
+        }
     }
 
     // ============================================================
@@ -82,6 +95,45 @@ public class GameManager : MonoBehaviour
         string scene = SceneManager.GetActiveScene().name;
         PlayerController.Instance.ExtendRope(amount);
         sceneRopeLengths[scene] = PlayerController.Instance.maxRopeLength;
+    }
+
+    /// <summary> 注册延迟绳子：当所有逗号分隔的 flag 都为 true 时，自动增长绳子 </summary>
+    public static void RegisterContingentRope(string flagNamesCsv, float amount)
+    {
+        if (string.IsNullOrEmpty(flagNamesCsv) || amount == 0f) return;
+
+        var cr = new ContingentRope
+        {
+            flagNames = flagNamesCsv.Split(','),
+            amount = amount,
+            consumed = false
+        };
+        contingentRopes.Add(cr);
+        Debug.Log($"[GameManager] 注册延迟绳子: flags=[{flagNamesCsv}] amount={amount}");
+
+        // 立即检查一次（可能在当前帧就满足了）
+        CheckContingentRopes();
+    }
+
+    private static void CheckContingentRopes()
+    {
+        foreach (var cr in contingentRopes)
+        {
+            if (cr.consumed) continue;
+
+            bool allTrue = true;
+            foreach (string name in cr.flagNames)
+            {
+                if (!GetFlag(name.Trim())) { allTrue = false; break; }
+            }
+
+            if (allTrue)
+            {
+                cr.consumed = true;
+                ExtendRope(cr.amount);
+                Debug.Log($"[GameManager] 条件满足，绳子 +{cr.amount}");
+            }
+        }
     }
 
     // ============================================================
