@@ -29,9 +29,10 @@ public class SceneTransferTrigger : MonoBehaviour
         if (collision.CompareTag("Player") && !isTransferring)
         {
             // 检查单例是否存在，防止空引用报错
-            if (PlayerController.Instance != null)
+            PlayerController player = PlayerController.Instance;
+            if (player != null)
             {
-                ExecuteSceneTransfer();
+                ExecuteSceneTransfer(player);
             }
             else
             {
@@ -40,12 +41,12 @@ public class SceneTransferTrigger : MonoBehaviour
         }
     }
 
-    private void ExecuteSceneTransfer()
+    private void ExecuteSceneTransfer(PlayerController player)
     {
         isTransferring = true;
 
         // 2. 状态防护：立刻冻结玩家操作与物理状态
-        PlayerController.Instance.FreezePlayer();
+        player.FreezePlayer();
         
         Debug.Log($"玩家已触发传送，正在加载目标场景: {targetSceneName}");
 
