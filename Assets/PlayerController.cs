@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -56,10 +57,30 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("PlayerController 需要 Rigidbody2D 组件。 ");
         }
 
+        // 位置恢复：GameManager > 默认出生点
+        string scn = SceneManager.GetActiveScene().name;
+        if (GameManager.TryGetSavedPosition(scn, out Vector2 savedPos))
+        {
+            if (Vector2.Distance(savedPos, transform.position) < 100f && Vector2.Distance(savedPos, transform.position) > 0.01f)
+            {
+                transform.position = savedPos;
+                Debug.Log($"[PlayerController] Start 恢复位置 [{scn}]={savedPos}");
+            }
+        }
+
+        // 绳子恢复：GameManager > Inspector 默认值
         if (ropeVisual != null && anchorTransform != null)
         {
             ropeVisual.anchorTransform = anchorTransform;
             ropeVisual.playerTransform = transform;
+
+            float restored = GameManager.GetSavedRope(scn);
+            if (restored > 0f)
+            {
+                maxRopeLength = restored;
+                Debug.Log($"[PlayerController] Start 恢复绳子 [{scn}]={restored}");
+            }
+
             ropeVisual.targetPhysicsDistance = maxRopeLength;
         }
     }
@@ -77,6 +98,10 @@ public class PlayerController : MonoBehaviour
         }
 
         horizontalInput = Input.GetAxisRaw("Horizontal");
+
+        // 玩家主动移动时，清除"刚恢复位置"标记（传送门恢复保护）
+        if (horizontalInput != 0f)
+            GameManager.PlayerJustRestored = false;
 
         if (spriteRenderer != null)
         {
@@ -173,9 +198,13 @@ public class PlayerController : MonoBehaviour
         Debug.Log("<color=green>[Player]</color> 玩家操作已恢复。");
     }
 
-    public void ChangeStoryProgress(int amount)
-{
-    maxRopeLength = amount;
-    Debug.Log($"<color=orange>[Player Data]</color> 玩家身上的值已改变！当前值: {maxRopeLength}");
-}
+    public void ExtendRope(float amount)
+    {
+        maxRopeLength += amount;
+        if (ropeVisual != null)
+        {
+            ropeVisual.targetPhysicsDistance = maxRopeLength;
+        }
+        Debug.Log($"<color=yellow>[Player]</color> 绳子长度增加 {amount}，当前: {maxRopeLength}");
+    }
 }

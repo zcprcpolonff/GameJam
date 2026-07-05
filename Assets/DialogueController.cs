@@ -27,6 +27,7 @@ public class DialogueController : MonoBehaviour
     private List<DialogueLine> currentLines = new List<DialogueLine>();
     private int currentIndex = 0;
     private bool isDialogueActive = false;
+    public bool IsDialogueActive => isDialogueActive;
 
     private Interactable currentTriggerSource;
 

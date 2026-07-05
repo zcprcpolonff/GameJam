@@ -781,6 +781,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ee3f1b5096147143be75c38b5e26615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactKey: 101
+  npcDialogue: []
+  HintCanvas: {fileID: 0}
 --- !u!58 &750568417
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1029,6 +1032,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ee3f1b5096147143be75c38b5e26615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactKey: 101
+  npcDialogue: []
+  HintCanvas: {fileID: 0}
 --- !u!58 &1053362877
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1181,11 +1187,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8730589395007996037, guid: 3c9161345d3ef544184e4b5c8a670199, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7
+      value: -7.27
       objectReference: {fileID: 0}
     - target: {fileID: 8730589395007996037, guid: 3c9161345d3ef544184e4b5c8a670199, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -2.49
       objectReference: {fileID: 0}
     - target: {fileID: 8730589395007996037, guid: 3c9161345d3ef544184e4b5c8a670199, type: 3}
       propertyPath: m_LocalPosition.z
