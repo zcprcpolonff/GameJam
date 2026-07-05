@@ -33,6 +33,10 @@ public class GameManager : MonoBehaviour
     /// <summary> 刚恢复了玩家位置（落地在传送点不算"走进来"）</summary>
     public static bool PlayerJustRestored { get; set; }
 
+    // ─── 传送门到达点（传送门强制落地位置，优先级高于保存的位置）───
+    private static string pendingArrivalScene;
+    private static string pendingArrivalPointName;
+
     // ─── 延迟条件绳子（等所有关联 flag 都就绪后才增长）───
     private class ContingentRope
     {
@@ -151,6 +155,21 @@ public class GameManager : MonoBehaviour
         SaveState(sceneName);
     }
 
+    /// <summary> 传送门跳转：不保存出发位置，改为强制到达目标 point </summary>
+    public static void TransferViaPortal(string currentScene, string targetScene, string targetPointName)
+    {
+        // 只保存绳子长度，不保存位置（传送点位置不应被记住）
+        if (PlayerController.Instance != null)
+        {
+            sceneRopeLengths[currentScene] = PlayerController.Instance.maxRopeLength;
+            Debug.Log($"[GameManager] 传送门保存 [{currentScene}] rope={sceneRopeLengths[currentScene]}");
+        }
+
+        pendingArrivalScene = targetScene;
+        pendingArrivalPointName = targetPointName;
+        SceneManager.LoadScene(targetScene);
+    }
+
     // ============================================================
     // 内部实现
     // ============================================================
@@ -195,17 +214,46 @@ public class GameManager : MonoBehaviour
             Debug.Log($"[GameManager] 首次进入 [{sceneName}]，基线 rope={pc.maxRopeLength}");
         }
 
-        // 恢复位置
-        if (savedPositions.TryGetValue(sceneName, out Vector2 savedPos))
+        // 恢复位置：优先检查传送门目标 point
+        Vector2 restoredPos = Vector2.zero;
+        bool hasPos = false;
+
+        if (pendingArrivalScene == sceneName && !string.IsNullOrEmpty(pendingArrivalPointName))
         {
-            float dist = Vector2.Distance(savedPos, pc.transform.position);
-            Debug.Log($"[GameManager] 尝试恢复 [{sceneName}] pos={savedPos} dist={dist}");
+            GameObject pt = GameObject.Find(pendingArrivalPointName);
+            if (pt != null)
+            {
+                restoredPos = pt.transform.position;
+                hasPos = true;
+                Debug.Log($"[GameManager] 传送门落地 [{sceneName}] point='{pendingArrivalPointName}' pos={restoredPos}");
+            }
+            else
+            {
+                Debug.LogWarning($"[GameManager] 找不到 point '{pendingArrivalPointName}'，回退到保存位置");
+            }
+            pendingArrivalScene = null;
+            pendingArrivalPointName = null;
+        }
+
+        if (!hasPos)
+        {
+            if (savedPositions.TryGetValue(sceneName, out Vector2 savedPos))
+            {
+                restoredPos = savedPos;
+                hasPos = true;
+            }
+        }
+
+        if (hasPos)
+        {
+            float dist = Vector2.Distance(restoredPos, pc.transform.position);
+            Debug.Log($"[GameManager] 尝试恢复 [{sceneName}] pos={restoredPos} dist={dist}");
             if (dist < 100f && dist > 0.01f)
             {
-                pc.transform.position = savedPos;
+                pc.transform.position = restoredPos;
                 TeleportCooldownUntil = Time.time + 0.5f;
                 PlayerJustRestored = true;
-                Debug.Log($"[GameManager] 恢复 [{sceneName}] pos={savedPos}");
+                Debug.Log($"[GameManager] 恢复 [{sceneName}] pos={restoredPos}");
             }
         }
     }

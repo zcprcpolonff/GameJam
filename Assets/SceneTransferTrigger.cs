@@ -8,11 +8,13 @@ public class SceneTransferTrigger : MonoBehaviour
     [Tooltip("目标场景的名称，必须与 Build Settings 中的名称完全一致")]
     [SerializeField] private string targetSceneName;
 
-    private bool isTransferring = false; // 防止单帧内多次触发
+    [Tooltip("目标场景中 point 的 GameObject 名称，传送到该位置（为空则沿用 GameManager 保存的位置）")]
+    [SerializeField] private string targetPointName;
+
+    private bool isTransferring = false;
 
     private void Awake()
     {
-        // 自动确保 Collider 的配置正确
         BoxCollider2D triggerCollider = GetComponent<BoxCollider2D>();
         if (triggerCollider != null)
         {
@@ -22,13 +24,10 @@ public class SceneTransferTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 刚恢复过位置 → 不算"走进来"，必须走出去再进来
         if (GameManager.PlayerJustRestored) return;
 
-        // 核心触发：检查碰撞体是否为玩家，且当前没有在传送中
         if (collision.CompareTag("Player") && !isTransferring)
         {
-            // 检查单例是否存在，防止空引用报错
             PlayerController player = PlayerController.Instance;
             if (player != null)
             {
@@ -36,7 +35,7 @@ public class SceneTransferTrigger : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"[{gameObject.name}] 找不到 PlayerController 实例！请确保玩家物体已正确初始化。");
+                Debug.LogError($"[{gameObject.name}] 找不到 PlayerController 实例！");
             }
         }
     }
@@ -44,13 +43,18 @@ public class SceneTransferTrigger : MonoBehaviour
     private void ExecuteSceneTransfer(PlayerController player)
     {
         isTransferring = true;
-
-        // 2. 状态防护：立刻冻结玩家操作与物理状态
         player.FreezePlayer();
-        
-        Debug.Log($"玩家已触发传送，正在加载目标场景: {targetSceneName}");
 
-        // 3. 通过 GameManager 跳转（自动保存当前位置）
-        GameManager.LoadScene(SceneManager.GetActiveScene().name, targetSceneName);
+        string currentScene = SceneManager.GetActiveScene().name;
+        Debug.Log($"[SceneTransferTrigger] {gameObject.name} → {targetSceneName} (point: {targetPointName ?? "无"})");
+
+        if (!string.IsNullOrEmpty(targetPointName))
+        {
+            GameManager.TransferViaPortal(currentScene, targetSceneName, targetPointName);
+        }
+        else
+        {
+            GameManager.LoadScene(currentScene, targetSceneName);
+        }
     }
 }
